@@ -2,9 +2,9 @@
 
 ## Setup Build Environment
 
-Follow https://github.com/esp-rs/rust-build installation
-Install esp-id : https://github.com/espressif/esp-idf
-Install Espressif LLVM : https://github.com/espressif/llvm-project
+Follow https://github.com/esp-rs/rust-build installation  
+Install esp-id : https://github.com/espressif/esp-idf  
+Install Espressif LLVM : https://github.com/espressif/llvm-project  
 
 
     cd llvm-project
