@@ -1,0 +1,37 @@
+[package]
+name = "rust-esp32-waveshare-4_2"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+# No xtensa in regular compiler yet
+[package.metadata.docs.rs]
+default-target = "x86_64-unknown-linux-gnu"
+
+[profile.release]
+# symbols are nice and they don't increase the size on Flash
+debug = true
+opt-level = "z"
+
+[profile.dev]
+opt-level = "s"
+
+[features]
+bind = []
+experimental = ["esp-idf-svc/experimental", "esp-idf-hal/experimental", "embedded-svc/experimental"]
+
+[dependencies]
+anyhow = {version = "1", features = ["backtrace"]}
+esp-idf-sys = { version = "0.30.1", features = ["binstart"] }
+esp-idf-svc = "0.36.2"
+esp-idf-hal = { path = "../esp-idf-hal" }
+embedded-svc = "0.16"
+
+epd-waveshare = "0.5.0"
+embedded-graphics = "0.7.1"
+embedded-hal = { version = "0.2.3", features = ["unproven"] }
+
+[build-dependencies]
+embuild = "0.28"
+anyhow = "1"
