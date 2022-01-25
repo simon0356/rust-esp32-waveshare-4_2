@@ -12,7 +12,7 @@ use embedded_graphics::{
     mono_font::{MonoTextStyle},
     text::Text,
 };
-use epd_waveshare::{epd4in2::*, prelude::*};
+use epd_waveshare::{epd4in2::*, prelude::*,graphics::VarDisplay};
 
 
 
@@ -22,8 +22,6 @@ fn init_screen()-> (spi::Master<SPI2, gpio::Gpio13<gpio::Unknown>, gpio::Gpio14<
         let pins = peripherals.pins;
         
         let spi  = peripherals.spi2;
-        
-        
         let sclk = pins.gpio13;
         let sdo = pins.gpio14;
         let cs = pins.gpio15.into_output().unwrap();
@@ -32,7 +30,6 @@ fn init_screen()-> (spi::Master<SPI2, gpio::Gpio13<gpio::Unknown>, gpio::Gpio14<
         let rst = pins.gpio26.into_output().unwrap();
 
         let config = <spi::config::Config as Default>::default().baudrate(26.MHz().into());
-
         let mut my_spi = spi::Master::<spi::SPI2, _, _, _, _>::new(
             spi,
             spi::Pins {
@@ -43,31 +40,22 @@ fn init_screen()-> (spi::Master<SPI2, gpio::Gpio13<gpio::Unknown>, gpio::Gpio14<
             },
             config,
         ).unwrap();
-        //let  delay = delay::Ets;
         // Setup EPD
         let epd = Epd4in2::new(&mut my_spi, cs, busy_in, dc, rst, &mut delay::Ets).unwrap();
         (my_spi,epd)
 }
 fn main() -> anyhow::Result<()> {
     esp_idf_sys::link_patches();
-
-
     // Bind the log crate to the ESP Logging facilities
     esp_idf_svc::log::EspLogger::initialize_default();
-    
-
-
-    
-    thread::sleep(Duration::from_secs(1));
-
-
 
     let (mut my_spi, mut epd) = init_screen();
 
 
     // Use display graphics from embedded-graphics
-    let mut display = Display4in2::default();
-    //let buffer =  400 / 8 * 300;
+    let mut buffer = vec![DEFAULT_BACKGROUND_COLOR.get_byte_value(); WIDTH as usize / 8 * HEIGHT as usize];
+    let mut display = VarDisplay::new(WIDTH, HEIGHT, &mut buffer);
+
 
     let style = MonoTextStyle::new(&FONT_10X20, Black);
 
@@ -82,8 +70,6 @@ fn main() -> anyhow::Result<()> {
 
     epd.update_frame(&mut my_spi, &display.buffer(), &mut delay::Ets)?;
     epd.display_frame(&mut my_spi, &mut delay::Ets)?;
-    
-
 
     // Set the EPD to sleep
     epd.sleep(&mut my_spi, &mut delay::Ets)?;
