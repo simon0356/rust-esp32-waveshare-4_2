@@ -3,17 +3,9 @@
 ## Setup Build Environment
 
 Follow https://github.com/esp-rs/rust-build installation  
-Install esp-id : https://github.com/espressif/esp-idf  
-Install Espressif LLVM : https://github.com/espressif/llvm-project  
-
-
-    cd llvm-project
-    mkdir build
-    cd build
-    cmake -G Ninja -DLLVM_ENABLE_PROJECTS='clang' -DCMAKE_BUILD_TYPE=Release ../llvm
-    cmake --build .
-    export PATH="$HOME/esp32/rust/src/llvm-project/build/bin:$PATH"
-
+Install esp-idf : https://github.com/espressif/esp-idf  
+    
+    cargo install -f ldproxy espflash espmonitor  
 
 ## Build and flash this project :
 
